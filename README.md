@@ -1,168 +1,193 @@
-# ML-EduPredict — Dự đoán Bỏ học & Kết quả Học tập Sinh viên
+﻿# ML-EduPredict
 
-Dự án **Học máy (Machine Learning)** phân loại đa lớp nhằm dự đoán kết quả học tập của sinh viên đại học: **Bỏ học (Dropout)**, **Đang học (Enrolled)** hoặc **Tốt nghiệp (Graduate)**. Hệ thống gồm quy trình phân tích dữ liệu (Jupyter Notebook), script huấn luyện mô hình production và **ứng dụng web Streamlit** đầy đủ tính năng demo / triển khai.
-
+Dự án **Machine Learning** nhằm dự đoán kết quả học tập của sinh viên với 3 nhãn chính: **Dropout**, **Enrolled** và **Graduate**. Phiên bản hiện tại tập trung vào **demo và triển khai giao diện Streamlit**, sử dụng các mô hình đã huấn luyện sẵn và dữ liệu minh họa để trình bày kết quả một cách trực quan.
 
 ---
 
 ## Mục lục
 
 1. [Tổng quan](#tổng-quan)
-2. [Bài toán & mục tiêu](#bài-toán--mục-tiêu)
-3. [Cấu trúc thư mục](#cấu-trúc-thư-mục)
-4. [Bộ dữ liệu](#bộ-dữ-liệu)
-5. [Quy trình xử lý & mô hình](#quy-trình-xử-lý--mô-hình)
-6. [Cài đặt môi trường](#cài-đặt-môi-trường)
-7. [Hướng dẫn sử dụng nhanh](#hướng-dẫn-sử-dụng-nhanh)
-8. [Ứng dụng web Streamlit (`app.py`)](#ứng-dụng-web-streamlit-apppy)
-9. [Kịch bản demo (`Demo Scenario.text`)](#kịch-bản-demo-demo-scenariotext)
-10. [Jupyter Notebook](#jupyter-notebook-phân-tích--thử-nghiệm)
-11. [Mô hình đã lưu (`model.pkl`)](#mô-hình-đã-lưu-modelpkl)
-12. [Lưu ý kỹ thuật & xử lý sự cố](#lưu-ý-kỹ-thuật--xử-lý-sự-cố)
-13. [Tác giả](#tác-giả)
+2. [Cấu trúc dự án hiện tại](#cấu-trúc-dự-án-hiện-tại)
+3. [Bộ dữ liệu](#bộ-dữ-liệu)
+4. [Ứng dụng Streamlit](#ứng-dụng-streamlit)
+5. [Cài đặt môi trường](#cài-đặt-môi-trường)
+6. [Hướng dẫn chạy dự án](#hướng-dẫn-chạy-dự-án)
+7. [Notebook phân tích](#notebook-phân-tích)
+8. [Mô hình và artifact hiện tại](#mô-hình-và-artifact-hiện-tại)
+9. [Ghi chú triển khai](#ghi-chú-triển-khai)
 
 ---
 
 ## Tổng quan
 
-| Thành phần | Mô tả |
-|------------|--------|
-| **Dữ liệu** | `dataset.csv` — 4.424 sinh viên, 36 đặc trưng gốc + nhãn `Target` |
-| **Notebook** | EDA, feature engineering, PCA, K-Means, SMOTE, so sánh 7 thuật toán |
-| **Huấn luyện** | `train_and_save.py` — Scale → SMOTE → **Voting Ensemble** (XGB + LGBM + RF) |
-| **Triển khai** | `app.py` — Streamlit: dự đoán, dashboard, lịch sử, báo cáo HTML |
-| **Đầu ra** | `model.pkl` (~46 MB) — ensemble + scaler + label encoder + `feature_cols` |
-| **Demo** | `Demo Scenario.text` — kịch bản trình bày 5 ca + timeline 12/25 phút |
+- **Bài toán:** phân loại đa lớp.
+- **Mục tiêu:** hỗ trợ nhận diện sinh viên có nguy cơ bỏ học, đồng thời cung cấp trực quan hóa kết quả và khả năng đối chiếu với hồ sơ mẫu.
+- **Công nghệ chính:** `Python`, `pandas`, `scikit-learn`, `xgboost`, `streamlit`, `matplotlib`, `seaborn`.
 
 ---
 
-## Bài toán & mục tiêu
+## Cấu trúc dự án hiện tại
 
-- **Loại bài toán:** Phân loại đa lớp (3 nhãn).
-- **Mục tiêu nghiệp vụ:** Nhận diện sớm sinh viên có nguy cơ bỏ học để can thiệp (học phí, cố vấn, tutoring).
-
-| Nhãn | Ý nghĩa | Tỷ lệ (dataset) |
-|------|---------|-----------------|
-| `Graduate` | Tốt nghiệp | ~49,9% |
-| `Dropout` | Bỏ học | ~32,1% |
-| `Enrolled` | Đang theo học | ~17,1% |
-
-Nguồn dữ liệu: bộ công khai *Predict students' dropout and academic success* (bối cảnh giáo dục đại học Bồ Đào Nha).
-
----
-
-## Cấu trúc thư mục
-
-```
-ML2026/
-├── dataset.csv                    # Dữ liệu gốc (sep ;)
-├── train_and_save.py              # Huấn luyện → model.pkl
-├── app.py                         # Ứng dụng Streamlit (UI + predict)
-├── model.pkl                      # Pipeline đã train (không commit Git)
-├── prediction_history.json        # Lịch sử dự đoán local (tự tạo, không commit)
-├── Demo Scenario.text             # Kịch bản demo chi tiết cho hội đồng
-├── requirements.txt               # Dependencies Python
-├── .gitignore                     # venv/, model.pkl, prediction_history.json, ...
-├── README.md                      # Tài liệu này
+```text
+ML-EduPredict/
+├── app.py                    # Ứng dụng Streamlit chính
+├── dataset.csv               # Dữ liệu gốc của bài toán
+├── demo_profiles.csv         # Hồ sơ mẫu dùng cho demo
+├── requirements.txt          # Danh sách thư viện cần cài
+├── scaler.pkl                # Artifacts đã huấn luyện
+├── pca.pkl                   # Artifacts đã huấn luyện
+├── kmeans.pkl                # Artifacts đã huấn luyện
+├── best_student_dropout_xgb.pkl  # Mô hình XGBoost được tải trong app
 ├── Predict students' dropout and academic success.ipynb
-├── Predict students' dropout and academic success.html
-└── venv/                          # Virtual environment (không commit)
+└── README.md                 # Tài liệu dự án
 ```
+
+### File quan trọng
+
+- `app.py`: chạy dashboard Streamlit với 3 tab:
+  - dự đoán và đối chiếu với hồ sơ mẫu
+  - bảng so sánh hiệu năng đa mô hình
+  - tổng quan dữ liệu và nhật ký cải tiến pipeline
+- `dataset.csv`: dữ liệu chính, phân cách bằng `;`
+- `demo_profiles.csv`: dữ liệu minh họa để thử nghiệm giao diện
+- `requirements.txt`: danh sách dependency sử dụng trong dự án
+- `best_student_dropout_xgb.pkl`, `scaler.pkl`, `pca.pkl`, `kmeans.pkl`: artifact mô hình dùng trực tiếp trong `app.py`
 
 ---
 
 ## Bộ dữ liệu
 
-| Thuộc tính | Giá trị |
-|------------|---------|
-| File | `dataset.csv` |
-| Phân cách | `;` |
-| Kích thước | 4.424 × 37 (36 feature + `Target`) |
-| Missing / duplicate | Không |
+### `dataset.csv`
 
-Sau khi đọc, script chuẩn hóa tên cột: khoảng trắng → `_` (ví dụ `Marital status` → `Marital_status`).
+- **Nguồn dữ liệu:** bộ dữ liệu công khai về sinh viên đại học.
+- **Phân cách:** dấu `;`
+- **Kích thước:** 4.424 dòng và 37 cột (bao gồm nhãn `Target`).
+- **Cột chính:** thông tin hành chính, học tập, tài chính, gia đình và các chỉ số kinh tế vĩ mô.
 
-### Nhóm đặc trư (36 cột gốc)
+### `demo_profiles.csv`
 
-| Nhóm | Ví dụ cột |
-|------|-----------|
-| Hành chính / tuyển sinh | `Marital_status`, `Application_mode`, `Course`, `Admission_grade` |
-| Gia đình / xã hội | `Mother's_qualification`, `Father's_occupation`, … |
-| Sinh viên | `Debtor`, `Tuition_fees_up_to_date`, `Gender`, `Age_at_enrollment`, … |
-| Học kỳ 1 & 2 | `Curricular_units_1st_sem_(enrolled/approved/grade/…)` |
-| Kinh tế vĩ mô | `Unemployment_rate`, `Inflation_rate`, `GDP` |
-
-### Feature engineering (bắt buộc khi predict)
-
-| Cột mới | Công thức |
-|---------|-----------|
-| `pass_rate_1` | `approved_1 / (enrolled_1 + 1)` |
-| `pass_rate_2` | `approved_2 / (enrolled_2 + 1)` |
-| `grade_progress` | `grade_2 − grade_1` |
-| `total_approved` | `approved_1 + approved_2` |
-| `avg_grade` | `(grade_1 + grade_2) / 2` |
-
-**Tổng cột đầu vào mô hình:** 41 (36 + 5).  
-`app.py` **phải** tính 5 cột này trước `scaler.transform` — nếu thiếu, mọi ca có thể bị dự đoán sai (ví dụ luôn Dropout).
+- Chứa **3 hồ sơ minh họa** được dùng để kiểm thử giao diện.
+- Mỗi hồ sơ tương ứng với một nhãn thực tế:
+  - `Dropout`
+  - `Enrolled`
+  - `Graduate`
 
 ---
 
-## Quy trình xử lý & mô hình
+## Ứng dụng Streamlit
 
-### Pipeline production (`train_and_save.py`)
+`app.py` hiện tại là phiên bản **dashboard chuyên nghiệp** với các chức năng sau:
 
-```
-dataset.csv (;)
-  → Chuẩn hóa tên cột
-  → Feature Engineering (5 cột)
-  → LabelEncoder(Target)
-  → Train/Test 80/20 (random_state=42)
-  → StandardScaler (fit train)
-  → SMOTE (chỉ train)
-  → VotingClassifier (soft, weights [3,2,1])
-        ├── XGBoost
-        ├── LightGBM
-        └── RandomForest
-  → Đánh giá test + lưu model.pkl
-```
+1. **Dự đoán và đối chiếu thực tế**
+   - người dùng chọn một hồ sơ demo
+   - chỉnh sửa các biến cốt lõi trên giao diện
+   - xem dự đoán của mô hình và so sánh với nhãn thực tế
 
-**Soft voting:** trung bình có trọng số xác suất 3 mô hình con.
+2. **Bảng so sánh hiệu năng đa mô hình**
+   - hiển thị độ chính xác của các thuật toán đã thử nghiệm trong notebook
 
-**Thời gian train:** khoảng 3–5 phút (CPU).
+3. **Tổng quan dữ liệu và nhật ký cải tiến pipeline**
+   - mô tả dữ liệu, các bước tiền xử lý và lý do chọn mô hình hiện tại
 
-### Pipeline nghiên cứu (Notebook)
+### Luồng xử lý trong app
 
-EDA → IQR outlier → Chi-square → **PCA (10)** + **K-Means (3)** → SMOTE → so sánh 7 classifier.  
-Kết luận notebook: XGBoost mạnh trên pipeline PCA; **production** dùng full 41 feature + ensemble để deploy ổn định hơn.
+- Tải các artifact `.pkl`
+- Đọc `demo_profiles.csv`
+- Ghi đè các giá trị từ giao diện vào hồ sơ mẫu
+- Chuẩn hóa dữ liệu
+- Áp dụng `PCA`
+- Áp dụng `KMeans`
+- Dự đoán bằng `XGBoost`
 
 ---
 
 ## Cài đặt môi trường
 
-**Yêu cầu:** Python 3.9+, RAM ≥ 8 GB khi train.
+### Yêu cầu
+
+- Python 3.9+
+- Có thể dùng `venv` hoặc `conda`
+
+### Cài đặt
 
 ```bash
-cd /đường/dẫn/ML2026
-python3 -m venv venv
-source venv/bin/activate          # Windows: venv\Scripts\activate
+cd D:\Documents\ML\ML-EduPredict
+python -m venv venv
+venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Hoặc cài tay:
+### Nếu muốn cài thủ công
 
 ```bash
-pip install pandas numpy scikit-learn imbalanced-learn xgboost lightgbm streamlit altair
+pip install pandas numpy scikit-learn imbalanced-learn xgboost lightgbm streamlit altair matplotlib seaborn
 ```
-
-*(Notebook thêm: `matplotlib`, `seaborn`, `jupyter`, `catboost` nếu cần.)*
 
 ---
 
-## Hướng dẫn sử dụng nhanh
-# Chạy ứng dụng
+## Hướng dẫn chạy dự án
+
+### Chạy ứng dụng Streamlit
+
+```bash
 streamlit run app.py
-# → http://localhost:8501
 ```
 
-## Ứng dụng web Streamlit (`app.py`)
+Sau đó mở trình duyệt tại địa chỉ:
 
+```text
+http://localhost:8501
+```
+
+### Kiểm tra nhanh các file mô hình
+
+Trước khi chạy `app.py`, hãy đảm bảo các file sau tồn tại trong thư mục dự án:
+
+- `scaler.pkl`
+- `pca.pkl`
+- `kmeans.pkl`
+- `best_student_dropout_xgb.pkl`
+
+Nếu thiếu bất kỳ file nào, hãy mở notebook để tạo lại các artifact hoặc bổ sung thủ công.
+
+---
+
+## Notebook phân tích
+
+File:
+
+- `Predict students' dropout and academic success.ipynb`
+
+Notebook này là nơi thực hiện:
+
+- phân tích exploratory data analysis
+- so sánh nhiều thuật toán
+- kiểm thử pipeline tiền xử lý
+- đánh giá hiệu năng mô hình
+- xuất các file `.pkl` dùng cho ứng dụng
+
+---
+
+## Mô hình và artifact hiện tại
+
+Phiên bản hiện tại của dự án đang sử dụng các artifact sau để phục vụ giao diện:
+
+| File | Vai trò |
+| --- | --- |
+| `best_student_dropout_xgb.pkl` | Mô hình XGBoost dùng cho dự đoán |
+| `scaler.pkl` | Bộ chuẩn hóa dữ liệu đầu vào |
+| `pca.pkl` | Bộ giảm chiều PCA |
+| `kmeans.pkl` | Mô hình phân cụm |
+
+Ứng dụng tải toàn bộ các file này trong `app.py` để tạo một pipeline inference hoàn chỉnh.
+
+---
+
+## Ghi chú triển khai
+
+- README này được viết để **phù hợp với cấu trúc hiện tại của dự án**.
+- `app.py` đang chạy theo thiết kế **demo + inference**, không phải theo cấu trúc `train_and_save.py` cũ.
+- Nếu bạn muốn, tôi có thể tiếp tục:
+  1. bổ sung phần **cách tái huấn luyện mô hình** vào README
+  2. chuẩn hóa lại cấu trúc thư mục theo chuẩn `src/`
+  3. thêm **hướng dẫn Docker / deploy**
