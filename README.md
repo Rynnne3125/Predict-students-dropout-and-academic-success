@@ -1,4 +1,4 @@
-﻿# ML-EduPredict
+﻿Predict-students-dropout-and-academic-success
 
 Dự án **Machine Learning** nhằm dự đoán kết quả học tập của sinh viên với 3 nhãn chính: **Dropout**, **Enrolled** và **Graduate**. Phiên bản hiện tại tập trung vào **demo và triển khai giao diện Streamlit**, sử dụng các mô hình đã huấn luyện sẵn và dữ liệu minh họa để trình bày kết quả một cách trực quan.
 
