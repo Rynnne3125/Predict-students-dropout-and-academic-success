@@ -5,12 +5,10 @@ import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# =====================================================================
-# CẤU HÌNH GIAO DIỆN DASHBOARD CHUẨN KHOA HỌC DATA SCIENCE
-# =====================================================================
+
 st.set_page_config(page_title="VKU Student Analytics Dashboard", page_icon="🎓", layout="wide")
 
-st.title("🎓 HỆ THỐNG TRỰC QUAN DỰ ĐOÁN NGUY CƠ BỎ HỌC & KẾT QUẢ HỌC TẬP")
+st.title(" HỆ THỐNG TRỰC QUAN DỰ ĐOÁN NGUY CƠ BỎ HỌC & KẾT QUẢ HỌC TẬP")
 st.markdown("##### *Đồ án: Nghiên cứu cải tiến Pipeline Tiền xử lý nâng cao kết hợp mô hình học quần hợp XGBoost*")
 st.markdown("---")
 
@@ -40,9 +38,9 @@ demo_df = load_demo_profiles()
 
 # PHÂN CHIA HỆ THỐNG THÀNH 3 PHÂN HỆ (TABS) CHUYÊN NGHIỆP
 tab1, tab2, tab3 = st.tabs([
-    "🔮 Hệ thống Dự đoán & Đối chiếu Thực tế", 
-    "📊 Bảng so sánh Hiệu năng Đa mô hình (.ipynb)", 
-    "📚 Tổng quan Tập dữ liệu & Nhật ký Cải tiến"
+    " 🔹Hệ thống Dự đoán & Đối chiếu Thực tế", 
+    " 🔹Bảng so sánh Hiệu năng Đa mô hình (.ipynb)", 
+    " 🔹Tổng quan Tập dữ liệu & Nhật ký Cải tiến"
 ])
 
 # =====================================================================
@@ -50,9 +48,9 @@ tab1, tab2, tab3 = st.tabs([
 # =====================================================================
 with tab1:
     if demo_df is None:
-        st.error("🚨 Không tìm thấy file 'demo_profiles.csv'. Vui lòng chạy ô Code trích xuất dữ liệu mẫu trong file Notebook trước để khởi tạo dữ liệu nền!")
+        st.error(" Không tìm thấy file 'demo_profiles.csv'. Vui lòng chạy ô Code trích xuất dữ liệu mẫu trong file Notebook trước để khởi tạo dữ liệu nền!")
     else:
-        st.subheader("📋 Bước 1: Chọn Hồ sơ sinh viên thực tế từ Cơ sở dữ liệu")
+        st.subheader(" Bước 1: Chọn Hồ sơ sinh viên thực tế từ Cơ sở dữ liệu")
         profile_choice = st.selectbox(
             "Hệ thống sẽ nạp toàn bộ các thông số nền ẩn (ngành học, điểm xét tuyển đầu vào, bối cảnh kinh tế vĩ mô...) của sinh viên này để đảm bảo tính toàn vẹn hình học không gian:",
             ["Hồ sơ số 1: Sinh viên thực tế có nhãn Bỏ học (Dropout) trong tập dữ liệu", 
@@ -66,10 +64,10 @@ with tab1:
         
         # ĐỐI CHIẾU: Hiển thị nhãn gốc thực tế thu được từ Cơ sở dữ liệu chữ
         actual_label = base_profile.get('Target', 'Không tìm thấy cột Target')
-        st.info(f"📋 **Trạng thái thực tế của sinh viên này ghi nhận trong Cơ sở dữ liệu gốc:** `{actual_label}`")
+        st.info(f" **Trạng thái thực tế của sinh viên này ghi nhận trong Cơ sở dữ liệu gốc:** `{actual_label}`")
         
         st.markdown("---")
-        st.subheader("📝 Bước 2: Tùy chỉnh 11 thông số cốt lõi trên giao diện (Nếu muốn thử nghiệm kịch bản)")
+        st.subheader(" Bước 2: Tùy chỉnh 11 thông số cốt lõi trên giao diện (Nếu muốn thử nghiệm kịch bản)")
         st.caption("Các thanh cuộn và ô nhập liệu dưới đây đã được tự động điền theo hồ sơ gốc. Bạn có thể thay đổi chúng để xem mô hình bẻ cong ranh giới quyết định.")
 
         # Chia giao diện làm 3 cột logic
@@ -102,7 +100,7 @@ with tab1:
 
         st.markdown("---")
         
-        if st.button("🚀 TIẾN HÀNH CHẨN ĐOÁN VÀ ĐỐI CHIẾU VỚI MÔ HÌNH AI", type="primary"):
+        if st.button(" TIẾN HÀNH CHẨN ĐOÁN VÀ ĐỐI CHIẾU VỚI MÔ HÌNH AI", type="primary"):
             if xgb_model is not None:
                 # Ánh xạ ngược dữ liệu tự nhiên sang dạng số
                 v_tuition = 1.0 if tuition_fees == "Đúng hạn / Đầy đủ" else 0.0
@@ -148,18 +146,18 @@ with tab1:
                 result_label = target_labels[prediction]
 
                 # HIỂN THỊ KẾT LUẬN VÀ ĐỐI CHIẾU KẾT QUẢ DỰ ĐOÁN VỚI THỰC TẾ
-                st.markdown("### 📢 Kết luận phân loại từ Mô hình AI (XGBoost)")
+                st.markdown("### Kết luận phân loại từ Mô hình AI (XGBoost)")
                 
                 # So sánh nhãn dự đoán và nhãn thực tế
-                is_correct = "CHÍNH XÁC KHỚP VỚI THỰC TẾ 🎯" if result_label == actual_label else "CÓ SỰ SAI LỆCH SO VỚI THỰC TẾ ⚠️"
+                is_correct = "CHÍNH XÁC KHỚP VỚI THỰC TẾ " if result_label == actual_label else "CÓ SỰ SAI LỆCH SO VỚI THỰC TẾ "
                 st.markdown(f"**Trạng thái kiểm thử đối chiếu:** Mô hình dự đoán `{is_correct}`")
 
                 if prediction == 0:
-                    st.error(f"🚨 **Hệ thống phát hiện rủi ro cực lớn:** Mô hình gán nhãn sinh viên thuộc nhóm: **Dropout (Bỏ học)**")
+                    st.error(f"**Hệ thống phát hiện rủi ro cực lớn:** Mô hình gán nhãn sinh viên thuộc nhóm: **Dropout (Bỏ học)**")
                 elif prediction == 1:
-                    st.warning(f"⚠️ **Thông báo trạng thái bấp bênh:** Mô hình gán nhãn sinh viên thuộc nhóm: **Enrolled (Đang theo học/Nợ môn)**")
+                    st.warning(f"**Thông báo trạng thái bấp bênh:** Mô hình gán nhãn sinh viên thuộc nhóm: **Enrolled (Đang theo học/Nợ môn)**")
                 else:
-                    st.success(f"🎉 **Đánh giá năng lực tích cực:** Mô hình gán nhãn sinh viên thuộc nhóm: **Graduate (Tốt nghiệp)**")
+                    st.success(f"**Đánh giá năng lực tích cực:** Mô hình gán nhãn sinh viên thuộc nhóm: **Graduate (Tốt nghiệp)**")
 
                 # Hiển thị bảng phân phối mức độ tin cậy phần trăm (%)
                 proba_df = pd.DataFrame({
@@ -171,31 +169,31 @@ with tab1:
                 st.markdown("---")
                 
                 # BIỆN LUẬN SƯ PHẠM ĐA DẠNG CÁC TRƯỜNG HỢP (EXPERT INFERENCE)
-                st.markdown("#### 🧠 Biện luận cơ chế rẽ nhánh cây quyết định phi tuyến tính:")
+                st.markdown("#### Biện luận cơ chế rẽ nhánh cây quyết định phi tuyến tính:")
                 
                 reasons = []
                 if v_tuition == 0.0 or v_debtor == 1.0:
-                    reasons.append("* 🛑 **Khủng hỏa tài chính học đường:** Sinh viên đang vướng mắc nợ học phí hoặc các khoản phí khác. Trong thuật toán học máy XGBoost, biến tài chính luôn có mức độ quan trọng (Feature Importance) hàng đầu, đẩy mạnh véc-tơ dữ liệu sang phân vùng nguy hiểm độc lập với điểm số.")
+                    reasons.append("**Khủng hỏa tài chính học đường:** Sinh viên đang vướng mắc nợ học phí hoặc các khoản phí khác. Trong thuật toán học máy XGBoost, biến tài chính luôn có mức độ quan trọng (Feature Importance) hàng đầu, đẩy mạnh véc-tơ dữ liệu sang phân vùng nguy hiểm độc lập với điểm số.")
                 if sem1_approved < sem1_enrolled or sem2_approved < sem2_enrolled:
-                    reasons.append(f"* 📉 **Khủng hoảng tích lũy tín chỉ học thuật:** Hồ sơ ghi nhận sinh viên nợ môn (Kỳ 1 rớt {sem1_enrolled - sem1_approved} môn, Kỳ 2 rớt {sem2_enrolled - sem2_approved} môn). Việc này làm sụt giảm nghiêm trọng giá trị thành phần chính `PCA_1` (trục đại diện cho năng lực hoàn thành chương trình).")
+                    reasons.append(f"**Khủng hoảng tích lũy tín chỉ học thuật:** Hồ sơ ghi nhận sinh viên nợ môn (Kỳ 1 rớt {sem1_enrolled - sem1_approved} môn, Kỳ 2 rớt {sem2_enrolled - sem2_approved} môn). Việc này làm sụt giảm nghiêm trọng giá trị thành phần chính `PCA_1` (trục đại diện cho năng lực hoàn thành chương trình).")
                 if sem2_grade < sem1_grade and sem2_grade > 0:
-                    reasons.append(f"* ⚠️ **Độ dốc phong độ sụt giảm lâm sàng:** Điểm trung bình có xu hướng đi xuống sụt giảm rõ rệt giữa hai học kỳ (Kỳ 1 đạt {sem1_grade} sang Kỳ 2 giảm còn {sem2_grade}), kích hoạt các nút điều kiện phạt phi tuyến tính.")
+                    reasons.append(f"**Độ dốc phong độ sụt giảm lâm sàng:** Điểm trung bình có xu hướng đi xuống sụt giảm rõ rệt giữa hai học kỳ (Kỳ 1 đạt {sem1_grade} sang Kỳ 2 giảm còn {sem2_grade}), kích hoạt các nút điều kiện phạt phi tuyến tính.")
                 if age > 23:
-                    reasons.append(f"* ⏳ **Rào cản áp lực tuổi tác xã hội:** Sinh viên nhập học lớn tuổi ({age} tuổi) thuộc nhóm đối tượng có tỷ lệ phân phối xác suất bỏ học cao tự nhiên trong bộ dữ liệu gốc do vướng bận công việc hoặc gia đình.")
+                    reasons.append(f"**Rào cản áp lực tuổi tác xã hội:** Sinh viên nhập học lớn tuổi ({age} tuổi) thuộc nhóm đối tượng có tỷ lệ phân phối xác suất bỏ học cao tự nhiên trong bộ dữ liệu gốc do vướng bận công việc hoặc gia đình.")
                 if (sem1_grade < 10.0 and sem1_grade > 0) or (sem2_grade < 10.0 and sem2_grade > 0):
-                    reasons.append("* ❌ **Học lực dưới ngưỡng chuẩn:** Điểm số rơi xuống dưới ngưỡng mức 10 (mức trượt môn tiêu chuẩn giáo dục Bồ Đào Nha), bẻ cong đường biên hình học đưa tọa độ sinh viên vào lõi Cụm K-Means rủi ro.")
+                    reasons.append("**Học lực dưới ngưỡng chuẩn:** Điểm số rơi xuống dưới ngưỡng mức 10 (mức trượt môn tiêu chuẩn giáo dục Bồ Đào Nha), bẻ cong đường biên hình học đưa tọa độ sinh viên vào lõi Cụm K-Means rủi ro.")
                 if sem2_grade >= 14.0 and v_scholarship == 1.0:
-                    reasons.append(f"* 🎖️ **Động lực kép giữ chân (Học bổng + Học lực giỏi):** Điểm số Kỳ 2 đạt mức giỏi ({sem2_grade}) cộng với việc duy trì học bổng tạo nên lực kéo hình học vô cùng mạnh mẽ đưa véc-tơ cắm sâu vào lõi phân vùng an toàn.")
+                    reasons.append(f"**Động lực kép giữ chân (Học bổng + Học lực giỏi):** Điểm số Kỳ 2 đạt mức giỏi ({sem2_grade}) cộng với việc duy trì học bổng tạo nên lực kéo hình học vô cùng mạnh mẽ đưa véc-tơ cắm sâu vào lõi phân vùng an toàn.")
                 if sem1_approved == 0 and sem2_approved == 0 and sem2_grade == 0:
-                    reasons.append("* 🚨 **Trạng thái đóng băng tiến trình:** Sinh viên bỏ học hoặc bỏ thi hoàn toàn 100% môn học, thuật toán trực tiếp cô lập mô thức hành vi và gán nhãn Dropout với xác suất áp đảo.")
+                    reasons.append("**Trạng thái đóng băng tiến trình:** Sinh viên bỏ học hoặc bỏ thi hoàn toàn 100% môn học, thuật toán trực tiếp cô lập mô thức hành vi và gán nhãn Dropout với xác suất áp đảo.")
 
                 if len(reasons) == 0:
-                    st.markdown("* ✅ **Hồ sơ cân bằng và an toàn:** Toàn bộ chỉ số hồ sơ bối cảnh kinh tế và điểm số học tập duy trì phân phối ổn định quanh mức chuẩn. Thuật toán không ghi nhận bất kỳ xung đột biến cố nguy hiểm nào.")
+                    st.markdown(" **Hồ sơ cân bằng và an toàn:** Toàn bộ chỉ số hồ sơ bối cảnh kinh tế và điểm số học tập duy trì phân phối ổn định quanh mức chuẩn. Thuật toán không ghi nhận bất kỳ xung đột biến cố nguy hiểm nào.")
                 else:
                     for r in reasons:
                         st.markdown(r)
                 
-                st.info(f"💡 *Giải thuật chuyên sâu:* Dựa trên toàn bộ thuộc tính, thuật toán phân cụm K-Means đã định danh sinh viên này thuộc nhóm chân dung số **#{cluster_id[0]}**. Tọa độ không gian 10 chiều từ bộ lọc PCA đã giúp mô hình XGBoost phân loại chuẩn xác mà hoàn toàn không bị nhiễu thông tin đa cộng tuyến.")
+                st.info(f" *Giải thuật chuyên sâu:* Dựa trên toàn bộ thuộc tính, thuật toán phân cụm K-Means đã định danh sinh viên này thuộc nhóm chân dung số **#{cluster_id[0]}**. Tọa độ không gian 10 chiều từ bộ lọc PCA đã giúp mô hình XGBoost phân loại chuẩn xác mà hoàn toàn không bị nhiễu thông tin đa cộng tuyến.")
             else:
                 st.warning("Vui lòng nạp đầy đủ các file đóng gói đầu ra .pkl để kích hoạt bộ não suy luận.")
 
@@ -203,7 +201,7 @@ with tab1:
 # TAB 2: BẢNG SO SÁNH HIỆU NĂNG ĐA MÔ HÌNH (TRỰC QUAN HÓA TỪ FILE NOTEBOOK)
 # =====================================================================
 with tab2:
-    st.subheader("📊 Kết quả thực nghiệm trực quan hóa đa mô hình phân loại đa lớp")
+    st.subheader(" Kết quả thực nghiệm trực quan hóa đa mô hình phân loại đa lớp")
     st.markdown("Dưới đây là bảng số liệu và biểu đồ cột so sánh chính xác được trích xuất trực tiếp từ quá trình huấn luyện thực nghiệm đa kiến trúc trên file nguồn `.ipynb`:")
     
     # Số liệu thực tế đồng bộ 100% với file chạy của bạn (XGBoost đạt điểm cao nhất 68.80%)
@@ -240,7 +238,7 @@ with tab2:
         st.dataframe(df_metrics.style.format({'Accuracy (%)': '{:.2f}%'}), use_container_width=True)
         
     st.markdown("---")
-    st.markdown("### 🔍 Biện luận học thuyết chuyên sâu về sự phân hóa hiệu năng:")
+    st.markdown("###  Biện luận học thuyết chuyên sâu về sự phân hóa hiệu năng:")
     st.markdown("""
     * **Vì sao nhóm thuật toán quần hợp dạng Cây (XGBoost, RandomForest, LightGBM) đạt hiệu năng áp đảo (~66.5% - 68.8%):**
       Hành vi sinh viên mang tính bản chất phi tuyến tính phức tạp. Nhóm thuật toán Cây quyết định phân chia không gian dữ liệu bằng chuỗi câu lệnh logic lồng cắt ngang trục tọa độ, giúp bắt trọn tương tác chéo giữa hoàn cảnh tài chính và năng lực học tập. Trong đó, **XGBoost** đạt quán quân nhờ thuật toán tối ưu Gradient Descent tuần tự, liên tục xây dựng cây sau sửa sai cho cây trước dựa trên các thành phần đặc trưng liên tục tinh túy thu được từ PCA.
@@ -252,13 +250,13 @@ with tab2:
 # TAB 3: THÔNG TIN TẬP DỮ LIỆU & NHẬT KÝ CẢI TIẾN PIPELINE
 # =====================================================================
 with tab3:
-    st.subheader("📚 Tổng quan Tập dữ liệu & Nhật ký Cải tiến Pipeline nâng cao")
+    st.subheader(" Tổng quan Tập dữ liệu & Nhật ký Cải tiến Pipeline nâng cao")
     
     col_info1, col_info2 = st.columns(2)
     
     with col_info1:
         st.markdown("""
-        ### 📊 Nguồn gốc & Bản chất Tập dữ liệu
+        ###  Nguồn gốc & Bản chất Tập dữ liệu
         * **Nguồn gốc thu thập:** Tập dữ liệu được trích xuất thực tế từ hồ sơ học thuật của sinh viên tại **Viện Bách khoa Portalegre (Polytechnic Institute of Portalegre) tại quốc gia Bồ Đào Nha**.
         * **Bản chất Thang điểm (0 - 20):** Điểm trung bình các học kỳ của sinh viên dao động từ **0 đến 20**. Đây là thang điểm tiêu chuẩn của hệ thống giáo dục Bồ Đào Nha. Trong đó mức **10 điểm** là ngưỡng tối thiểu để Đạt/Qua môn, mức 20 điểm là điểm tuyệt đối xuất sắc.
         * **Bài toán Mất cân bằng lớp (Class Imbalance):** Trong dữ liệu gốc, mẫu sinh viên Tốt nghiệp (`Graduate`) chiếm tỷ trọng áp đảo tuyệt đối so với nhóm thiểu số bỏ học (`Dropout`).
@@ -266,7 +264,7 @@ with tab3:
         
     with col_info2:
         st.markdown("""
-        ### 🛠️ Nhật ký quy trình cải tiến nâng cao kỹ thuật hình học không gian
+        ###  Nhật ký quy trình cải tiến nâng cao kỹ thuật hình học không gian
         Hệ thống của chúng ta đã khắc phục hoàn toàn điểm yếu cốt lõi trong file thô của tác giả gốc để nâng tầm học thuật của đồ án:
         1. **Chống rò rỉ dữ liệu (Data Leakage):** Thực hiện phân chia Train/Test sạch sẽ trước khi can thiệp tính toán hình học.
         2. **Bảo toàn thông tin điểm số:** Giữ lại trọn vẹn các cột điểm số liên tục (Thang 0-20) thay vì xóa bỏ.
@@ -275,4 +273,4 @@ with tab3:
         5. **Tối ưu hóa thuật toán SMOTE:** Đặt SMOTE chạy phía sau bước PCA & K-Means giúp thuật toán nội suy mẫu nhân tạo 1:1:1 trên không gian véc-tơ số liên tục hoàn hảo, không lo xung đột kiểu dữ liệu.
         """)
         
-    st.success("📝 Ý nghĩa của điểm số Accuracy ~68.80%: Điểm số này phản ánh đúng năng lực phân loại thực chất và khách quan trên cả 3 nhãn mục tiêu sau khi đã được san bằng mật độ mẫu bằng SMOTE, loại bỏ hoàn toàn hiện tượng học lệch đoán mò ảo của các mô hình thô ban đầu.")
+    st.success(" Ý nghĩa của điểm số Accuracy ~68.80%: Điểm số này phản ánh đúng năng lực phân loại thực chất và khách quan trên cả 3 nhãn mục tiêu sau khi đã được san bằng mật độ mẫu bằng SMOTE, loại bỏ hoàn toàn hiện tượng học lệch đoán mò ảo của các mô hình thô ban đầu.")
